@@ -13,16 +13,14 @@ import reactor.kotlin.core.publisher.toMono
 @Service
 class CustomerServiceImpl(private val customerRepository: CustomerRepository) : CustomerService {
 
-    var bool:Boolean = false
 
     // function for login
     override fun validateLogin(loginDto: LoginDto): Mono<Customer> {
-        val response = customerRepository.existsByPhoneNumber(loginDto.getPhoneNumber())
-        if(response.mapNotNull() ){
+        if(customerRepository.existsByPhoneNumber(loginDto.getPhoneNumber())){
             val customer = customerRepository.getCustomerByPhoneNumber(loginDto.getPhoneNumber())
             val dOB = customer.map(Customer::getDateOfBirth)
 
-            if(loginDto.getDOB().toMono() == dOB){
+            if(loginDto.getDateOfBirth().toMono() == dOB){
                 return customer
             }
             else{
@@ -33,6 +31,7 @@ class CustomerServiceImpl(private val customerRepository: CustomerRepository) : 
         else{
             throw CustomerNotFoundException("Customer Not Found!!!")
         }
+
     }
 
     //Method to register a new customer

@@ -8,7 +8,9 @@ import reactor.core.publisher.Mono
 @Repository
 interface CustomerRepository : ReactiveMongoRepository<Customer,String>{
 
-    fun getCustomerByPhoneNumber(phoneNumber:String):Mono<Customer>
+    fun getCustomerByPhoneNumberAndDateOfBirth(phoneNumber:String, dateOfBirth:String):Mono<Customer>
 
-    fun existsByPhoneNumber(phoneNumber: String):Mono<Boolean>
+    fun existsByPhoneNumber(phoneNumber: String):Boolean
+
+    fun getCustomerByPhoneNumber(phoneNumber: String):Mono<Customer>
 }

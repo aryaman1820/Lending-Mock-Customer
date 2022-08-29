@@ -3,27 +3,27 @@ package com.lendingmock.customer.model
 class LoginDto {
 
     private lateinit var phoneNumber:String
-    private lateinit var dOB:String
+    private lateinit var dateOfBirth:String
 
     constructor(){
 
     }
 
-    constructor(phoneNumber: String, dOB: String){
+    constructor(phoneNumber: String, dateOfBirth: String){
         this.phoneNumber = phoneNumber
-        this.dOB = dOB
+        this.dateOfBirth = dateOfBirth
     }
 
     fun getPhoneNumber():String = phoneNumber
 
-    fun getDOB():String = dOB
+    fun getDateOfBirth():String = dateOfBirth
 
 
     fun setPhoneNumber(phoneNumber:String){
         this.phoneNumber = phoneNumber
     }
 
-    fun setDOB(dOB:String){
-        this.dOB = dOB
+    fun setDateOfBirth(dateOfBirth:String){
+        this.dateOfBirth = dateOfBirth
     }
 }
