@@ -15,15 +15,15 @@ import reactor.kotlin.core.publisher.toMono
 
 internal class CustomerServiceImplTest() {
 
-    private val customer = Customer("01","Aryaman","7033592833","aryaman@gmail.com","18/06/1999")
-    private val loginDto = LoginDto("7033592833","18/06/1999")
+    private val customer = Customer("01","ABC",7033592833,"customer@gmail.com","20/08/1999", 503303010775, "KGGP4740R")
+    private val loginDto = LoginDto(7033592833,"18/06/1999")
     @MockBean
     lateinit var mockServiceImpl:CustomerServiceImpl
 
     @Test
     fun validateLogin() {
         val mockCustomerRepository = Mockito.mock(CustomerRepository::class.java)
-        Mockito.`when`(mockCustomerRepository.getCustomerByPhoneNumber("7033592833")).thenReturn(customer.toMono())
+        Mockito.`when`(mockCustomerRepository.getCustomerByPhoneNumber(7033592833)).thenReturn(customer.toMono())
 
 
 
