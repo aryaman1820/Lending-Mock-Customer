@@ -2,7 +2,7 @@ package com.lendingmock.customer.service
 
 import com.lendingmock.customer.entity.Customer
 import com.lendingmock.customer.exception.BadCredentials
-import com.lendingmock.customer.exception.CustomerAlreadyExistsException
+import com.lendingmock.customer.exception.CustomerNotFoundException
 import com.lendingmock.customer.model.LoginDto
 import com.lendingmock.customer.repository.CustomerRepository
 import org.springframework.stereotype.Service
@@ -19,10 +19,11 @@ class CustomerServiceImpl(private val customerRepository: CustomerRepository) : 
     override fun validateLogin(loginDto: LoginDto): Mono<Customer> {
        return customerRepository.getCustomerByPhoneNumber(loginDto.getPhoneNumber())
            .filter{customer -> customer.getDateOfBirth() == loginDto.getDateOfBirth()}
+           .switchIfEmpty(Mono.error(BadCredentials("Invalid Credentials!!!")))
 
     }
 
-    //Method to register a new customer
+    //Function to register a new customer
     override fun registerNewCustomer(customer: Customer): Mono<Customer> {
         return customerRepository.save(customer)
 
@@ -31,6 +32,11 @@ class CustomerServiceImpl(private val customerRepository: CustomerRepository) : 
     //function to get all customers
     override fun getAllCustomers(): Flux<Customer> {
         return customerRepository.findAll()
+            .switchIfEmpty(Mono.error(CustomerNotFoundException("Customers does not exist!!!")))
+    }
+
+    override fun deleteCustomerById(customerId: String): Mono<Void> {
+        return customerRepository.deleteById(customerId)
     }
 
 

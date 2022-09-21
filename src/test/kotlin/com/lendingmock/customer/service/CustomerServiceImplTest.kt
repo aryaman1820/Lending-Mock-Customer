@@ -1,32 +1,52 @@
 package com.lendingmock.customer.service
 
-
-
 import com.lendingmock.customer.entity.Customer
 import com.lendingmock.customer.model.LoginDto
 import com.lendingmock.customer.repository.CustomerRepository
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
+import org.junit.jupiter.api.Assertions.*
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
-import org.mockito.Mockito
-import org.springframework.boot.test.mock.mockito.MockBean
-import reactor.kotlin.core.publisher.toMono
+internal class CustomerServiceImplTest {
 
+    private val customerRepository:CustomerRepository = mockk()
+    private val customerServiceImpl = CustomerServiceImpl(customerRepository)
 
-internal class CustomerServiceImplTest() {
+    private val customer1 = Customer("01","Aryaan",456,"a@a.com","20/01/1999",123,"456")
+    private val customer2 = Customer("02","Vishal",789,"v@v.com","01/01/1998",789,"4159")
 
-    private val customer = Customer("01","ABC",7033592833,"customer@gmail.com","20/08/1999", 503303010775, "KGGP4740R")
-    private val loginDto = LoginDto(7033592833,"18/06/1999")
-    @MockBean
-    lateinit var mockServiceImpl:CustomerServiceImpl
+    private val monoCustomer1 = Mono.just(customer1)
+
+    private val fluxCustomer = Flux.just(customer1,customer2)
 
     @Test
     fun validateLogin() {
-        val mockCustomerRepository = Mockito.mock(CustomerRepository::class.java)
-        Mockito.`when`(mockCustomerRepository.getCustomerByPhoneNumber(7033592833)).thenReturn(customer.toMono())
+        val loginDto =LoginDto(456,"20/01/1999")
 
 
+        every { customerRepository.getCustomerByPhoneNumber(loginDto.getPhoneNumber()) } returns monoCustomer1
 
-        Mockito.verify(mockServiceImpl).validateLogin(loginDto)
+        val testLogin = customerServiceImpl.validateLogin(loginDto)
+
+        verify(exactly = 1) { customerRepository.getCustomerByPhoneNumber(loginDto.getPhoneNumber()) }
+        Assertions.assertEquals(monoCustomer1,testLogin)
+    }
+
+    @Test
+    fun registerNewCustomer() {
+    }
+
+    @Test
+    fun getAllCustomers() {
+    }
+
+    @Test
+    fun deleteCustomerById() {
     }
 }

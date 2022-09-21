@@ -1,16 +1,15 @@
 package com.lendingmock.customer.controller
 
 import com.lendingmock.customer.entity.Admin
-import com.lendingmock.customer.entity.Customer
+import com.lendingmock.customer.exception.AdminAlreadyExistsException
 import com.lendingmock.customer.service.AdminServiceImpl
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
+
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 import java.util.function.Function
@@ -30,8 +29,10 @@ class AdminController(private val adminServiceImpl: AdminServiceImpl) {
     }
 
     @PostMapping("/register")
-    fun addNewAdmin(@RequestBody admin:Admin):Mono<Admin>{
+    fun addNewAdmin(@RequestBody admin:Admin):Mono<ResponseEntity<Admin>>{
         return adminServiceImpl.addNewAdmin(admin)
+            .map<ResponseEntity<Admin>>(Function {t:Admin -> ResponseEntity.ok().body(t)})
+            .switchIfEmpty(Mono.error(AdminAlreadyExistsException("Admin already exists!!!")))
 
     }
 
